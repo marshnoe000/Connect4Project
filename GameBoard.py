@@ -13,6 +13,7 @@ class GameBoard:
         self.rows = rows
         self.cols = cols
         self.grid = [[Token.EMPTY for _ in range(cols)] for _ in range(rows)]
+        self.winningSequence = []
 
     def printBoard(self):
         for row in self.grid:
@@ -46,6 +47,7 @@ class GameBoard:
                         self.grid[row][col + 1] == player.token and
                         self.grid[row][col + 2] == player.token and
                         self.grid[row][col + 3] == player.token):
+                    self.winningSequence = [(row, col), (row, col + 1), (row, col + 2), (row, col + 3)]
                     return True
         return False
 
@@ -56,6 +58,7 @@ class GameBoard:
                         self.grid[row + 1][col] == player.token and
                         self.grid[row + 2][col] == player.token and
                         self.grid[row + 3][col] == player.token):
+                    self.winningSequence = [(row, col), (row + 1, col), (row + 2, col), (row + 3, col)]
                     return True
         return False
 
@@ -76,6 +79,7 @@ class GameBoard:
                         self.grid[row + 1][col - 1] == player.token and
                         self.grid[row + 2][col - 2] == player.token and
                         self.grid[row + 3][col - 3] == player.token):
+                    self.winningSequence = [(row, col), (row + 1, col - 1), (row + 2, col - 2), (row + 3, col - 3)]
                     return True
 
         return False
