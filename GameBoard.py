@@ -7,7 +7,6 @@ from Token import Token
 def getStartingPlayer(player1, player2):
     return player1 if player1.goesFirst else player2
 
-
 class GameBoard:
     def __init__(self, rows=6, cols=7):
         self.rows = rows
@@ -18,8 +17,10 @@ class GameBoard:
     def printBoard(self):
         for row in self.grid:
             print('| ' + ' | '.join(str(cell) for cell in row) + ' |')
+
         print('+---' * self.cols + '+')
-        print('+' + '-'.join(['{:^3}'.format(i) for i in range(self.cols)]) + '+')  # centers the col number in the col
+        print('+' + '-'.join(
+            ['{:^3}'.format(i) for i in range(self.cols)]) + '+')  # centers the col number in the col        
 
     def dropToken(self, col, token: Token):
         for row in range(self.rows - 1, -1, -1):
@@ -28,14 +29,28 @@ class GameBoard:
                 return True
         return False
 
+    def removeToken(self, col):
+        for row in range(self.rows - 1, -1, -1):
+            if self.grid[row][col] != Token.EMPTY:
+                self.grid[row][col] = Token.EMPTY
+                return True
+        return False
+
     def isValidMove(self, col):
         return 0 <= col < self.cols and self.grid[0][col] == Token.EMPTY
 
     def isFull(self):
-        for col in range(self.cols):
-            if self.grid[0][col] == Token.EMPTY:
-                return False
-        return True
+        return all(self.isColumnFull(col) for col in range(self.cols))
+
+    def isColumnFull(self, col):
+        return self.grid[0][col] != Token.EMPTY
+
+    def getValidMoves(self):
+        validMoves = []
+        for col in [3, 2, 4, 0, 1, 5, 6]:
+            if not self.isColumnFull(col):
+                validMoves.append(col)
+        return validMoves
 
     def hasPlayerWon(self, player: Player):
         return self.checkHorizontal(player) or self.checkVertical(player) or self.checkDiagonals(player)
@@ -83,3 +98,8 @@ class GameBoard:
                     return True
 
         return False
+
+    def copy(self):
+        copiedBoard = GameBoard(6,7)
+        copiedBoard.grid = [row[:] for row in self.grid]
+        return copiedBoard

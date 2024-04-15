@@ -1,3 +1,4 @@
+from AiAgent import AiAgent
 from GameBoard import GameBoard, getStartingPlayer
 from Player import Player
 from Token import Token
@@ -18,6 +19,8 @@ if __name__ == "__main__":
 
         board.dropToken(colNumber, currentPlayer.token)
         board.printBoard()
+        bestMove = AiAgent.findBestMove(board, board.getValidMoves(), player2)
+        print("Best Move: " + str(bestMove))
 
         if board.hasPlayerWon(player1):
             print("Congratulations " + player1.name + "! You won!")

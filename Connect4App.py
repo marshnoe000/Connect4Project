@@ -1,4 +1,7 @@
+import time
 import tkinter as tk
+
+from AiAgent import AiAgent
 from Token import Token
 from GameBoard import GameBoard, getStartingPlayer
 from Player import Player
@@ -12,6 +15,7 @@ class ConnectFourGUI:
         self.master = master
         self.master.title("Connect Four")
         self.game_board = None
+        self.firstMove = True
 
         self.create_player_submission()
 
@@ -89,7 +93,6 @@ class ConnectFourGUI:
         self.canvas.bind("<Configure>", self.on_canvas_resize)
 
         self.circles = []
-        self.draw_board()
 
         self.button_frame = tk.Frame(self.master)
         self.button_frame.grid(row=2, column=0, sticky="nsew")
@@ -99,6 +102,14 @@ class ConnectFourGUI:
                                command=lambda c=col: self.drop_token(c))
             button.grid(row=0, column=col, sticky="nsew", padx=5)
             self.button_frame.columnconfigure(col, weight=5)
+        if self.current_player.isBot and self.firstMove:
+            self.firstMove = False
+            bestMove = AiAgent.findBestMove(self.game_board, self.game_board.getValidMoves(), self.current_player)
+            self.game_board.dropToken(bestMove, self.current_player.token)
+            self.current_player = self.player2 if self.current_player is self.player1 else self.player1
+            self.turn_label.config(text="Player's Turn: " + self.current_player.name, font=("Comic Sans MS", 24))
+
+        self.draw_board()
 
     def draw_board(self):
         self.canvas.delete("all")
@@ -137,14 +148,27 @@ class ConnectFourGUI:
     def drop_token(self, col):
         if self.game_board.isValidMove(col) and not self.game_board.isFull():
             successful = self.game_board.dropToken(col, self.current_player.token)
+            self.draw_board()
             if successful is True:
-                self.draw_board()
                 if self.game_board.hasPlayerWon(self.current_player):
                     self.displayWin()
                     self.display_congratulations()
                 else:
                     self.current_player = self.player2 if self.current_player == self.player1 else self.player1
                     self.turn_label.config(text="Player's Turn: " + self.current_player.name, font=("Comic Sans MS", 24))
+                if self.current_player.isBot is True:
+                    bestMove = AiAgent.findBestMove(self.game_board, self.game_board.getValidMoves(), self.current_player)
+                    self.draw_board()
+                    self.game_board.dropToken(bestMove, self.current_player.token)
+                    self.draw_board()
+                if self.game_board.hasPlayerWon(self.current_player):
+                    self.displayWin()
+                    self.display_congratulations()
+                else:
+                    self.current_player = self.player2 if self.current_player == self.player1 else self.player1
+                    self.turn_label.config(text="Player's Turn: " + self.current_player.name, font=("Comic Sans MS", 24))
+
+
 
     def display_congratulations(self):
         # Create a new window to display congratulations message
