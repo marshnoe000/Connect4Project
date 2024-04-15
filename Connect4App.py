@@ -176,7 +176,7 @@ class ConnectFourGUI:
         congrats_window.title("Congratulations!")
 
         # Add label with congratulatory message
-        congrats_label = tk.Label(congrats_window, text="Congratulations, " + self.current_player.name + "! You won!", font=("Comic Sans MS", 24))
+        congrats_label = tk.Label(congrats_window, text="Congratulations, " + self.current_player.name + "! You won in " + str(self.game_board.totalTurns) + " turns!", font=("Comic Sans MS", 24))
         congrats_label.pack(pady=20)
 
         # Add exit button

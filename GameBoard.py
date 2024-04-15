@@ -13,6 +13,7 @@ class GameBoard:
         self.cols = cols
         self.grid = [[Token.EMPTY for _ in range(cols)] for _ in range(rows)]
         self.winningSequence = []
+        self.totalTurns = 0
 
     def printBoard(self):
         for row in self.grid:
@@ -23,6 +24,7 @@ class GameBoard:
             ['{:^3}'.format(i) for i in range(self.cols)]) + '+')  # centers the col number in the col        
 
     def dropToken(self, col, token: Token):
+        self.totalTurns += 1
         for row in range(self.rows - 1, -1, -1):
             if self.grid[row][col] == Token.EMPTY:
                 self.grid[row][col] = token
