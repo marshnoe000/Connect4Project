@@ -1,4 +1,3 @@
-from AiAgent import AiAgent
 from GameBoard import GameBoard, getStartingPlayer
 from Player import Player
 from Token import Token
@@ -9,7 +8,7 @@ if __name__ == "__main__":
     player2 = Player("Kyle", Token.YELLOW, False)
     currentPlayer = getStartingPlayer(player1, player2)
 
-    board.printBoard()
+    board.printBoardForDebuggingOrBasicPlay()
     stillPlaying = True
     while stillPlaying and not board.isFull():
         print(currentPlayer.name + "'s(" + currentPlayer.token.value + ") turn!")
@@ -18,9 +17,7 @@ if __name__ == "__main__":
             colNumber = int(input("Input a different column number:"))
 
         board.dropToken(colNumber, currentPlayer.token)
-        board.printBoard()
-        bestMove = AiAgent.findBestMove(board, board.getValidMoves(), player2)
-        print("Best Move: " + str(bestMove))
+        board.printBoardForDebuggingOrBasicPlay()
 
         if board.hasPlayerWon(player1):
             print("Congratulations " + player1.name + "! You won!")

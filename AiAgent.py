@@ -2,25 +2,21 @@ from Token import Token
 from GameBoard import GameBoard
 from Player import Player
 
+nextMove = None  # Define global variables outside
+bestGameState = None
+bestGameStateScore = 0
 
 class AiAgent:
-    nextMove = None
-    bestGameState: GameBoard = None
-    bestGameStateScore = 0
     @staticmethod
     def findBestMove(gameState: GameBoard, validMoves, player: Player):
         global nextMove
         global bestGameState
         global bestGameStateScore
         nextMove = 0
-        AiAgent.negamaxWithAlphaBeta(gameState, validMoves, 5, 1 if player.goesFirst else -1, 5,
-                                                          player.token)
-        print("Best game state with this score: " + str(bestGameStateScore))
-        bestGameState.printBoard()
-        print("--------------------------------------------------------------")
+        turnMultiplier = 1 if player.goesFirst else -1
+        AiAgent.negamaxWithAlphaBeta(gameState, validMoves, 5, turnMultiplier, 5,
+                                     player.token)
         return nextMove
-
-    # Turn Multiplier should be set to 1 if red and -1 if set to yellow
 
     @staticmethod
     def negamaxWithAlphaBeta(gameState: GameBoard, validMoves, depth, turnMultiplier, maxDepth, playerToken,
@@ -61,11 +57,8 @@ class AiAgent:
         groupCount = 4
         grid = gameBoard.grid
 
-        # Center column should be more heavily weighted
         centerArray = [row[colCount // 2] for row in grid]
-
         centerCount = centerArray.count(playerToken)
-
         score += centerCount * 3
 
         # Vertical
@@ -93,9 +86,6 @@ class AiAgent:
             for col in range(colCount - groupCount + 1):
                 group = [grid[row - i][col + i] for i in range(groupCount)]
                 score += AiAgent.evaluateGrouping(group, playerToken)
-
-        gameBoard.printBoard()
-        print("Score: " + str(score))
 
         return score
 
